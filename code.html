@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Engineer Interview Prep | Sristi Singh</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-code: #0d1117;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-pink: #ec4899;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2d2d3a;
+            --gradient-1: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            --gradient-3: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Background Effects */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-effects::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-2%, -2%) rotate(1deg); }
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text span {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-pill:hover, .nav-pill.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem;
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Project Section */
+        .project-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .section-icon.blue { background: var(--gradient-1); }
+        .section-icon.green { background: var(--gradient-2); }
+        .section-icon.orange { background: var(--gradient-3); }
+        .section-icon.purple { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); }
+
+        .section-title {
+            flex: 1;
+        }
+
+        .section-title h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-title span {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Q&A Cards */
+        .qa-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .qa-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .qa-header {
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .qa-header:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .qa-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .qa-question {
+            flex: 1;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .qa-toggle {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .qa-toggle svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .qa-card.open .qa-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        .qa-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .qa-card.open .qa-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 2000px;
+        }
+
+        .answer-content {
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .answer-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .answer-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .answer-content strong {
+            color: var(--text-primary);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-code);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-block code {
+            color: #e2e8f0;
+        }
+
+        .code-block .keyword { color: #c792ea; }
+        .code-block .function { color: #82aaff; }
+        .code-block .string { color: #c3e88d; }
+        .code-block .comment { color: #676e95; }
+        .code-block .number { color: #f78c6c; }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .highlight-box.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .highlight-box.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        /* Lists */
+        .answer-content ul, .answer-content ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .answer-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-code);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .data-table td {
+            color: var(--text-secondary);
+        }
+
+        .data-table tr:hover td {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Emoji Icons */
+        .emoji-icon {
+            font-size: 1.25rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Analogy Box */
+        .analogy-box {
+            background: var(--bg-code);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        .analogy-box::before {
+            content: '💡 Analogy: ';
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+            color: var(--text-muted);
+        }
+
+        .footer p {
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-pills {
+                justify-content: center;
+            }
+
+            .hero h2 {
+                font-size: 1.75rem;
+            }
+
+            .stats {
+                gap: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .qa-header {
+                padding: 1rem;
+            }
+
+            .qa-question {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Expand All Button */
+        .expand-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .expand-all-btn:hover {
+            background: var(--gradient-1);
+            border-color: transparent;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effects"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">📊</div>
+                <div class="logo-text">
+                    <h1>Interview Prep</h1>
+                    <span>Data Engineer Questions</span>
+                </div>
+            </div>
+            <nav class="nav-pills">
+                <a href="#project1" class="nav-pill active">Tax Portal</a>
+                <a href="#project2" class="nav-pill">EID Dashboard</a>
+                <a href="#project3" class="nav-pill">DEX Dashboard</a>
+                <a href="#architecture" class="nav-pill">Architecture</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Data Engineer Interview Questions</h2>
+            <p>Comprehensive Q&A covering PySpark, Kafka, Airflow, SQL, and real-world project scenarios at Blackstone</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">25</div>
+                    <div class="stat-label">Questions</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">10+</div>
+                    <div class="stat-label">Technologies</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project 1: Tax Payment Portal -->
+        <section class="project-section" id="project1">
+            <div class="section-header">
+                <div class="section-icon blue">💰</div>
+                <div class="section-title">
+                    <h3>Tax Payment Portal / TTR Automation</h3>
+                    <span>PySpark, Airflow, Kafka, Snowflake, SQL, AWS</span>
+                </div>
+                <div class="section-actions">
+                    <button class="expand-all-btn" onclick="toggleSection('project1')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+                        Toggle All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Q1 -->
+            <div class="qa-card" data-section="project1">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">1</div>
+                    <div class="qa-question">How did you handle 10M+ records and partitioning in PySpark?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <div class="analogy-box">When we have lots of data (like 10 million rows), we can't process it all at once - it's like trying to eat a whole pizza in one bite! So we break it into smaller pieces called partitions.</div>
+                        
+                        <p><strong>Date-based Partitioning:</strong> I split data by date (like January data in one folder, February in another). This way, when someone asks for January data, we only look at that small piece, not everything.</p>
+                        
+                        <p><strong>Handling Skewed Data:</strong> For skewed data (when some days have way more invoices than others), I used <strong>salting</strong> - I added a random number to the busy partitions to spread the work evenly across all computers.</p>
+                        
+                        <div class="highlight-box">
+                            💡 Think of it like having 10 cashiers at a store - you don't want all customers going to one cashier!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="qa-card" data-section="project1">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">2</div>
+                    <div class="qa-question">How did you handle Kafka exactly-once delivery?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <div class="analogy-box">Imagine sending a WhatsApp message - you want it delivered exactly once, not zero times (lost) or twice (duplicate).</div>
+                        
+                        <p><strong>Idempotent Producer:</strong> I used Kafka's idempotent producer - this means even if we accidentally send the same message twice, Kafka is smart enough to keep only one copy.</p>
+                        
+                        <p><strong>Consumer Rebalancing:</strong> For consumer rebalancing (when we add or remove computers), I used <strong>manual offset commits</strong> - I only mark a message as 'done' AFTER I've successfully saved it to the database.</p>
+                        
+                        <div class="highlight-box success">
+                            ✅ This way, if something crashes, we just re-read the last few messages and try again.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="qa-card" data-section="project1">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">3</div>
+                    <div class="qa-question">Why did you use views instead of materialized views?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>View:</strong> Like a window - every time you look through it, you see what's happening right now (live data).</p>
+                        
+                        <p><strong>Materialized View:</strong> Like taking a photo - it's faster to look at, but it shows old information until you take a new photo.</p>
+                        
+                        <div class="highlight-box">
+                            📊 I chose regular views because our tax data changes frequently during the day, and users always need the latest numbers. The query was fast enough (under 3 seconds) so we didn't need to 'take photos' and refresh them.
+                        </div>
+                        
+                        <p><strong>Clustering Keys:</strong> I used <code>(business_unit, fiscal_year)</code> because most queries filter by these columns - it's like organizing books by genre and year so you can find them faster.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="qa-card" data-section="project1">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">4</div>
+                    <div class="qa-question">How did you handle schema evolution in Parquet?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Schema evolution</strong> means when the source team adds new columns to their data without telling us!</p>
+                        
+                        <div class="analogy-box">It's like having a flexible form - if someone adds a new field, we just add a new box on our form instead of throwing an error.</div>
+                        
+                        <p>I used PySpark's <code>mergeSchema=true</code> option:</p>
+                        
+                        <div class="code-block">
+                            <code><span class="keyword">df</span> = spark.read.option(<span class="string">"mergeSchema"</span>, <span class="string">"true"</span>).parquet(<span class="string">"path/"</span>)</code>
+                        </div>
+                        
+                        <p>For old data that doesn't have the new column, we just fill it with <code>null</code> (empty). This way, our pipeline never breaks when sources add new fields.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="qa-card" data-section="project1">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">5</div>
+                    <div class="qa-question">How did you handle BU/Sub-BU hierarchy?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>Our company has a tree structure - like a family tree: <strong>Main company → Business Units → Sub-Business Units → Teams</strong></p>
+                        
+                        <p>I used a <strong>recursive CTE</strong> (a query that calls itself) to walk through this tree:</p>
+                        
+                        <div class="code-block">
+<code><span class="keyword">WITH RECURSIVE</span> hierarchy <span class="keyword">AS</span> (
+  <span class="keyword">SELECT</span> id, parent_id, name, <span class="number">1</span> <span class="keyword">as</span> level 
+  <span class="keyword">FROM</span> orgs <span class="keyword">WHERE</span> parent_id <span class="keyword">IS NULL</span>
+  <span class="keyword">UNION ALL</span>
+  <span class="keyword">SELECT</span> o.id, o.parent_id, o.name, h.level + <span class="number">1</span>
+  <span class="keyword">FROM</span> orgs o <span class="keyword">JOIN</span> hierarchy h <span class="keyword">ON</span> o.parent_id = h.id
+)
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> hierarchy;</code>
+                        </div>
+                        
+                        <div class="highlight-box warning">
+                            ⚠️ Our hierarchy was 5 levels deep. For circular references (A reports to B, B reports to A - which is wrong), I added a check: if we go more than 10 levels deep, stop and flag it as an error.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q6 -->
+            <div class="qa-card" data-section="project1">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">6</div>
+                    <div class="qa-question">How did you measure 70% reduction?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Before automation:</strong> Team spent ~40 hours/week on manual data entry and checking</p>
+                        <p><strong>After my pipeline:</strong> Only ~12 hours/week on the same tasks</p>
+                        
+                        <div class="highlight-box success">
+                            📉 40 hours → 12 hours = <strong>70% less time</strong> spent on manual work
+                        </div>
+                        
+                        <p><strong>How I tracked this:</strong></p>
+                        <ol>
+                            <li>Counting Jira tickets for manual data fixes (before vs after)</li>
+                            <li>Asking the team to log their hours for 2 weeks before and after</li>
+                            <li>Counting Excel files manually uploaded (dropped from 50/week to 5/week)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project 2: EID Dashboard -->
+        <section class="project-section" id="project2">
+            <div class="section-header">
+                <div class="section-icon green">🆔</div>
+                <div class="section-title">
+                    <h3>EID Identification & Mapping Dashboard</h3>
+                    <span>PySpark, Airflow, Snowflake, SQL, Sigma</span>
+                </div>
+                <div class="section-actions">
+                    <button class="expand-all-btn" onclick="toggleSection('project2')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+                        Toggle All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="qa-card" data-section="project2">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">7</div>
+                    <div class="qa-question">How did you handle different formats from Big 4 firms?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>Each firm (Deloitte, EY, KPMG, PwC) sends data in different formats - like four people writing their addresses differently.</p>
+                        
+                        <p>I created a <strong>mapping configuration file</strong> for each firm:</p>
+                        
+                        <div class="code-block">
+<code><span class="keyword">mappings</span> = {
+  <span class="string">'deloitte'</span>: {<span class="string">'emp_id'</span>: <span class="string">'EID'</span>, <span class="string">'emp_name'</span>: <span class="string">'EmployeeName'</span>},
+  <span class="string">'ey'</span>: {<span class="string">'employee_id'</span>: <span class="string">'EID'</span>, <span class="string">'name'</span>: <span class="string">'EmployeeName'</span>},
+  ...
+}</code>
+                        </div>
+                        
+                        <p><strong>15-20 edge cases handled:</strong></p>
+                        <ul>
+                            <li>Date formats (MM/DD/YYYY vs DD-MM-YYYY)</li>
+                            <li>Number formats (1,000.00 vs 1.000,00)</li>
+                            <li>Missing optional fields</li>
+                        </ul>
+                        
+                        <p>I handled these with a cleaning function that standardizes everything before loading.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="qa-card" data-section="project2">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">8</div>
+                    <div class="qa-question">How did you implement incremental loading?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Incremental loading</strong> means: don't reload ALL data every time, just load NEW or CHANGED data.</p>
+                        
+                        <p>I used Snowflake <strong>MERGE</strong> statements:</p>
+                        
+                        <div class="code-block">
+<code><span class="keyword">MERGE INTO</span> target_table t
+<span class="keyword">USING</span> source_table s <span class="keyword">ON</span> t.eid = s.eid
+<span class="keyword">WHEN MATCHED THEN UPDATE SET</span> ...
+<span class="keyword">WHEN NOT MATCHED THEN INSERT</span> ...</code>
+                        </div>
+                        
+                        <p><strong>Watermark tracking:</strong> I tracked the <code>last_modified_date</code>. Each run, I only pick records where <code>modified_date > last_watermark</code>.</p>
+                        
+                        <div class="highlight-box">
+                            🔄 For late-arriving data, I keep a <strong>3-day lookback window</strong> - we always reprocess the last 3 days just in case.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q9 -->
+            <div class="qa-card" data-section="project2">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">9</div>
+                    <div class="qa-question">How did you deduplicate EIDs?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Deduplication</strong> means removing duplicate records of the same person.</p>
+                        
+                        <p><strong>Deterministic matching</strong> - exact matches on:</p>
+                        <ul>
+                            <li>Employee ID</li>
+                            <li>SSN (last 4 digits)</li>
+                            <li>Date of Birth</li>
+                        </ul>
+                        
+                        <div class="highlight-box success">
+                            ✅ If all three match = same person (100% confident)
+                        </div>
+                        
+                        <p><strong>Fuzzy matching</strong> (when names are spelled slightly different):</p>
+                        <ul>
+                            <li>First name + Last name similarity (Levenshtein distance)</li>
+                            <li>If similarity > 85% AND same DOB = probably same person</li>
+                        </ul>
+                        
+                        <p>Our false positive rate was about <strong>2%</strong> - meaning 2 out of 100 matches might be wrong. We flagged these for human review instead of auto-merging.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q10 -->
+            <div class="qa-card" data-section="project2">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">10</div>
+                    <div class="qa-question">How did you handle Time Travel for audits?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Snowflake Time Travel</strong> is like a time machine for data - you can see what the data looked like yesterday, last week, etc.</p>
+                        
+                        <p>Our retention period was <strong>14 days</strong> (Snowflake Enterprise default). We could go back 14 days to see old data.</p>
+                        
+                        <div class="highlight-box">
+                            💰 For storage costs: longer retention = more storage = more money. 14 days was a good balance because most audit questions are about recent changes.
+                        </div>
+                        
+                        <p>For older history, we saved <strong>daily snapshots</strong> to a separate archive table (cheaper storage). If we needed data older than 14 days, we queried our archive table instead.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q11 -->
+            <div class="qa-card" data-section="project2">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">11</div>
+                    <div class="qa-question">How did you implement CDC (Change Data Capture)?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>CDC</strong> means capturing only the changes (inserts, updates, deletes) instead of reloading everything.</p>
+                        
+                        <p>I used <strong>Snowflake Streams</strong>:</p>
+                        
+                        <div class="code-block">
+<code><span class="keyword">CREATE STREAM</span> eid_changes <span class="keyword">ON TABLE</span> eid_master;</code>
+                        </div>
+                        
+                        <div class="analogy-box">A stream is like a camera watching a table - it records every change.</div>
+                        
+                        <p>For <strong>offset tracking</strong>, Snowflake handles this automatically. After we process the changes, we consume the stream (like marking emails as read).</p>
+                        
+                        <p>For <strong>transactional consistency</strong> across multiple tables:</p>
+                        
+                        <div class="code-block">
+<code><span class="keyword">BEGIN TRANSACTION;</span>
+  <span class="comment">-- process stream 1</span>
+  <span class="comment">-- process stream 2</span>
+<span class="keyword">COMMIT;</span></code>
+                        </div>
+                        
+                        <p>Either all tables update, or none do.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q12 -->
+            <div class="qa-card" data-section="project2">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">12</div>
+                    <div class="qa-question">How did you build the unmapped EID flagging logic?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>Our rule engine was <strong>rule-based</strong> (not ML) - simple IF-THEN rules:</p>
+                        
+                        <div class="code-block">
+<code><span class="comment">Rule 1:</span> <span class="keyword">IF</span> eid <span class="keyword">NOT IN</span> master_list → FLAG <span class="keyword">as</span> <span class="string">'Unknown EID'</span>
+<span class="comment">Rule 2:</span> <span class="keyword">IF</span> eid <span class="keyword">IN</span> master_list <span class="keyword">BUT</span> department <span class="keyword">IS NULL</span> → FLAG <span class="keyword">as</span> <span class="string">'Missing Department'</span>
+<span class="comment">Rule 3:</span> <span class="keyword">IF</span> eid status = <span class="string">'Terminated'</span> <span class="keyword">BUT</span> has new transactions → FLAG <span class="keyword">as</span> <span class="string">'Suspicious Activity'</span></code>
+                        </div>
+                        
+                        <p>I stored these rules in a <strong>config table</strong> so business users could add new rules without changing code.</p>
+                        
+                        <p><strong>Decision flow:</strong></p>
+                        <ol>
+                            <li>Check if EID exists → No? Flag it</li>
+                            <li>Check if all required fields present → No? Flag it</li>
+                            <li>Check if EID is active → No? Flag it</li>
+                            <li>All checks pass → Mark as 'Valid'</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project 3: DEX Dashboard -->
+        <section class="project-section" id="project3">
+            <div class="section-header">
+                <div class="section-icon orange">📈</div>
+                <div class="section-title">
+                    <h3>Tax Data Exchange (DEX) Dashboard</h3>
+                    <span>PySpark, SQL, Airflow, Snowflake, Sigma</span>
+                </div>
+                <div class="section-actions">
+                    <button class="expand-all-btn" onclick="toggleSection('project3')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+                        Toggle All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Q13 -->
+            <div class="qa-card" data-section="project3">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">13</div>
+                    <div class="qa-question">How did you handle DEX vs TRACK reconciliation?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Reconciliation</strong> means checking if two systems have the same numbers.</p>
+                        
+                        <p>Our <strong>tolerance threshold</strong> was $0.01 (one cent) - if the difference is less than 1 cent, we consider it a match. This handles floating-point precision issues.</p>
+                        
+                        <table class="data-table">
+                            <tr>
+                                <th>System</th>
+                                <th>Amount</th>
+                                <th>Difference</th>
+                                <th>Result</th>
+                            </tr>
+                            <tr>
+                                <td>DEX</td>
+                                <td>$1000.001</td>
+                                <td rowspan="2">$0.001</td>
+                                <td rowspan="2">✅ MATCH</td>
+                            </tr>
+                            <tr>
+                                <td>TRACK</td>
+                                <td>$1000.00</td>
+                            </tr>
+                        </table>
+                        
+                        <p>For larger differences, we flagged them for review. I used <code>ROUND()</code> function in SQL to ensure consistent decimal places before comparing.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q14 -->
+            <div class="qa-card" data-section="project3">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">14</div>
+                    <div class="qa-question">What changed when you moved from Tableau to Sigma?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Tableau</strong> uses extracts - it downloads data once and queries the local copy (fast but stale).</p>
+                        
+                        <p><strong>Sigma</strong> uses live queries - it asks Snowflake directly every time (always fresh but slower).</p>
+                        
+                        <p><strong>Changes I made:</strong></p>
+                        <ol>
+                            <li>Created <strong>summary tables</strong> in Snowflake (pre-aggregated data) so Sigma queries are fast</li>
+                            <li>Added caching at the Snowflake layer using <strong>result caching</strong></li>
+                            <li>Simplified complex calculations - moved them from dashboard to SQL views</li>
+                        </ol>
+                        
+                        <div class="highlight-box success">
+                            ✅ Result: Dashboard loads in 3-5 seconds (acceptable) and data is always live.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q15 -->
+            <div class="qa-card" data-section="project3">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">15</div>
+                    <div class="qa-question">How did you implement version comparison (SCD)?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>SCD Type 2</strong> means we keep full history of every change.</p>
+                        
+                        <p>When a tax record changes:</p>
+                        <ol>
+                            <li>Mark old record as <code>is_current = FALSE</code>, set <code>end_date = today</code></li>
+                            <li>Insert new record with <code>is_current = TRUE</code>, <code>start_date = today</code>, <code>end_date = NULL</code></li>
+                        </ol>
+                        
+                        <table class="data-table">
+                            <tr>
+                                <th>EID</th>
+                                <th>Amount</th>
+                                <th>start_date</th>
+                                <th>end_date</th>
+                                <th>is_current</th>
+                            </tr>
+                            <tr>
+                                <td>123</td>
+                                <td>$1000</td>
+                                <td>2024-01-01</td>
+                                <td>2024-06-01</td>
+                                <td>FALSE</td>
+                            </tr>
+                            <tr>
+                                <td>123</td>
+                                <td>$1200</td>
+                                <td>2024-06-01</td>
+                                <td>NULL</td>
+                                <td>TRUE</td>
+                            </tr>
+                        </table>
+                        
+                        <p>For <strong>change flags</strong>, I added columns like <code>amount_changed</code> (TRUE/FALSE) and <code>amount_delta</code> ($200 in above example).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q16 -->
+            <div class="qa-card" data-section="project3">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">16</div>
+                    <div class="qa-question">How did you handle K1/K3 IRS schema validation?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Schedule K-1</strong> is a tax form with very specific fields required by IRS.</p>
+                        
+                        <p>I built validation rules based on <strong>IRS Publication 541</strong> requirements:</p>
+                        <ol>
+                            <li>Partner's SSN or EIN must be valid format</li>
+                            <li>Box 1-20 must have correct data types (numbers, not text)</li>
+                            <li>199A fields (Box 20, Code Z) must match specific calculations</li>
+                            <li>8886 footnotes must be present if certain transaction types exist</li>
+                        </ol>
+                        
+                        <p><strong>~30+ edge cases handled:</strong></p>
+                        <ul>
+                            <li>Negative income scenarios</li>
+                            <li>Multi-state allocations</li>
+                            <li>Foreign partner withholding</li>
+                            <li>Guaranteed payments calculations</li>
+                        </ul>
+                        
+                        <p>Each rule was coded as a SQL check, and failures were logged with specific error messages for the tax team to fix.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q17 -->
+            <div class="qa-card" data-section="project3">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">17</div>
+                    <div class="qa-question">How did you handle concurrent edit conflicts?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>When two people edit the same thing at the same time, someone's work might get lost!</p>
+                        
+                        <p>I used <strong>optimistic locking</strong>:</p>
+                        <ol>
+                            <li>When User A opens a record, we note the <code>version_number = 5</code></li>
+                            <li>When User A saves, we check: is version still 5?
+                                <ul>
+                                    <li>Yes → Save and make version = 6</li>
+                                    <li>No → Someone else changed it! Show error: 'Please refresh and try again'</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        
+                        <div class="code-block">
+<code><span class="keyword">UPDATE</span> hierarchy 
+<span class="keyword">SET</span> name = <span class="string">'New Name'</span>, version = version + <span class="number">1</span>
+<span class="keyword">WHERE</span> id = <span class="number">123</span> <span class="keyword">AND</span> version = <span class="number">5</span>;  <span class="comment">-- Only works if version unchanged</span></code>
+                        </div>
+                        
+                        <p>If zero rows updated, we know there was a conflict and alert the user.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q18 -->
+            <div class="qa-card" data-section="project3">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">18</div>
+                    <div class="qa-question">How did you differentiate amended returns from duplicates?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>Our <strong>composite key</strong> for identifying unique records was: <code>Entity ID + Tax Year + Form Type + Version Number</code></p>
+                        
+                        <p><strong>Amended returns</strong> have a higher version number:</p>
+                        <ul>
+                            <li>Original: Entity=123, Year=2024, Form=K1, <strong>Version=1</strong></li>
+                            <li>Amended: Entity=123, Year=2024, Form=K1, <strong>Version=2</strong> ← This is intentional!</li>
+                        </ul>
+                        
+                        <p><strong>True duplicates</strong> have same version:</p>
+                        <ul>
+                            <li>Record 1: Entity=123, Year=2024, Form=K1, Version=1</li>
+                            <li>Record 2: Entity=123, Year=2024, Form=K1, Version=1 ← This is an error!</li>
+                        </ul>
+                        
+                        <div class="highlight-box">
+                            📋 <strong>Rule:</strong> Same key with DIFFERENT version = Amendment (keep both) | Same key with SAME version = Duplicate (flag for review)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section class="project-section" id="architecture">
+            <div class="section-header">
+                <div class="section-icon purple">🏗️</div>
+                <div class="section-title">
+                    <h3>Architecture & Infrastructure Deep Dives</h3>
+                    <span>Testing, AWS, CI/CD, Performance, Cost Optimization</span>
+                </div>
+                <div class="section-actions">
+                    <button class="expand-all-btn" onclick="toggleSection('architecture')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+                        Toggle All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Q19 -->
+            <div class="qa-card" data-section="architecture">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">19</div>
+                    <div class="qa-question">How did you test Airflow DAGs?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>Testing Airflow DAGs has <strong>3 levels</strong>:</p>
+                        
+                        <p><strong>1. Unit Tests</strong> - Test individual functions:</p>
+                        <div class="code-block">
+<code><span class="keyword">def</span> <span class="function">test_transform_function</span>():
+    input_data = [...]
+    result = transform(input_data)
+    <span class="keyword">assert</span> result == expected_output</code>
+                        </div>
+                        
+                        <p><strong>2. DAG Validation Tests</strong> - Check DAG structure:</p>
+                        <div class="code-block">
+<code><span class="keyword">def</span> <span class="function">test_dag_loads</span>():
+    dag = DagBag().get_dag(<span class="string">'my_dag'</span>)
+    <span class="keyword">assert</span> dag <span class="keyword">is not None</span>
+    <span class="keyword">assert</span> len(dag.tasks) == <span class="number">5</span></code>
+                        </div>
+                        
+                        <p><strong>3. Integration Tests</strong> - Run with sample data in test environment</p>
+                        
+                        <div class="highlight-box">
+                            🔄 For <strong>idempotency</strong> (running twice gives same result), I tested by running pipeline once → Check results → Running again with same data → Results should be identical. If record counts doubled, something is wrong!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q20 -->
+            <div class="qa-card" data-section="architecture">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">20</div>
+                    <div class="qa-question">Give 3 specific Great Expectations rules you wrote:</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>1. No null values in required fields:</strong></p>
+                        <div class="code-block">
+<code>expect_column_values_to_not_be_null(column=<span class="string">'eid'</span>)</code>
+                        </div>
+                        
+                        <p><strong>2. Amount should be positive:</strong></p>
+                        <div class="code-block">
+<code>expect_column_values_to_be_between(
+    column=<span class="string">'tax_amount'</span>, 
+    min_value=<span class="number">0</span>, 
+    max_value=<span class="number">1000000000</span>
+)</code>
+                        </div>
+                        
+                        <p><strong>3. Date format should be valid:</strong></p>
+                        <div class="code-block">
+<code>expect_column_values_to_match_regex(
+    column=<span class="string">'fiscal_date'</span>,
+    regex=<span class="string">r'\d{4}-\d{2}-\d{2}'</span>  <span class="comment"># YYYY-MM-DD format</span>
+)</code>
+                        </div>
+                        
+                        <p>For <strong>expectation drift</strong> (when rules become outdated), I reviewed and updated expectations every quarter with the data team.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q21 -->
+            <div class="qa-card" data-section="architecture">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">21</div>
+                    <div class="qa-question">How did you configure EMR and handle spot instances?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Our EMR cluster configuration:</strong></p>
+                        <ul>
+                            <li><strong>Master node:</strong> m5.xlarge (reliable, on-demand)</li>
+                            <li><strong>Core nodes:</strong> r5.2xlarge (memory-heavy for Spark)</li>
+                            <li><strong>Task nodes:</strong> r5.2xlarge SPOT instances (cheap but can disappear)</li>
+                        </ul>
+                        
+                        <p>I chose <strong>r5 (memory-optimized)</strong> because PySpark loves RAM for caching data.</p>
+                        
+                        <p><strong>Spot termination handling:</strong></p>
+                        <ol>
+                            <li>Enabled <strong>checkpointing</strong> - Spark saves progress every 10 minutes</li>
+                            <li>If spot instance dies, another takes over and resumes from checkpoint</li>
+                            <li>Critical jobs used on-demand only (no risk)</li>
+                            <li>Non-critical jobs used 70% spot + 30% on-demand mix</li>
+                        </ol>
+                        
+                        <div class="highlight-box success">
+                            💰 This saved us about <strong>60% on compute costs</strong> compared to all on-demand.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q22 -->
+            <div class="qa-card" data-section="architecture">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">22</div>
+                    <div class="qa-question">How did you handle REST API failures with Appian?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Retry logic:</strong></p>
+                        <div class="code-block">
+<code><span class="keyword">@retry</span>(tries=<span class="number">3</span>, delay=<span class="number">5</span>, backoff=<span class="number">2</span>)  <span class="comment"># 3 tries, wait 5s, then 10s, then 20s</span>
+<span class="keyword">def</span> <span class="function">call_appian_api</span>(data):
+    response = requests.post(url, json=data)
+    response.raise_for_status()
+    <span class="keyword">return</span> response</code>
+                        </div>
+                        
+                        <p><strong>Circuit breaker</strong> (stop trying if API is totally down):</p>
+                        <ul>
+                            <li>If 5 failures in 1 minute → Open circuit (stop calling)</li>
+                            <li>Wait 5 minutes → Try one test call</li>
+                            <li>If test works → Close circuit (resume normal calls)</li>
+                        </ul>
+                        
+                        <p><strong>For partial batch failures</strong> (some records succeed, some fail):</p>
+                        <ul>
+                            <li>I logged failed records to a <strong>'dead letter queue'</strong> (separate table)</li>
+                            <li>A separate job retried these failed records every hour</li>
+                            <li>After 3 retries, alert the team for manual intervention</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q23 -->
+            <div class="qa-card" data-section="architecture">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">23</div>
+                    <div class="qa-question">What was your actual latency SLA?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>Our SLA was <strong>'near real-time'</strong> which meant: Payment events visible in dashboard within <strong>5 minutes</strong> of occurring.</p>
+                        
+                        <p>It was actually <strong>micro-batch</strong>, not true streaming:</p>
+                        <ul>
+                            <li>Kafka consumers ran every 30 seconds</li>
+                            <li>Processing took ~2 minutes</li>
+                            <li>Dashboard refresh every ~2 minutes</li>
+                            <li><strong>Total end-to-end: ~5 minutes</strong></li>
+                        </ul>
+                        
+                        <div class="highlight-box warning">
+                            ⚠️ <strong>Kafka consumer lag tolerance:</strong> Maximum 10,000 messages behind. If lag exceeded this, PagerDuty alert fired and we investigated.
+                        </div>
+                        
+                        <p>For truly time-sensitive alerts (like fraud detection), we had a separate true streaming pipeline with <strong>&lt;10 second latency</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q24 -->
+            <div class="qa-card" data-section="architecture">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">24</div>
+                    <div class="qa-question">Give an example of conflicting stakeholder requirements:</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p><strong>Real example:</strong></p>
+                        
+                        <p>🔬 <strong>Data Scientist wanted:</strong> Raw, granular transaction-level data (millions of rows) for ML model training.</p>
+                        
+                        <p>📊 <strong>Business Analyst wanted:</strong> Aggregated daily summaries (thousands of rows) for quick dashboard loading.</p>
+                        
+                        <div class="highlight-box warning">
+                            ⚡ <strong>Conflict:</strong> One wanted big data, other wanted small data from the same source.
+                        </div>
+                        
+                        <p><strong>How I resolved it:</strong></p>
+                        <ol>
+                            <li>I created <strong>TWO data products</strong> from same pipeline:
+                                <ul>
+                                    <li><code>transactions_raw</code> table → For Data Scientist</li>
+                                    <li><code>transactions_daily_summary</code> view → For Business Analyst</li>
+                                </ul>
+                            </li>
+                            <li>Both fed from same source, maintained by same pipeline</li>
+                            <li>Everyone happy! Data Scientist got details, BA got speed</li>
+                        </ol>
+                        
+                        <div class="highlight-box success">
+                            💡 <strong>Key learning:</strong> Don't choose one over other - find solution that serves both.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q25 -->
+            <div class="qa-card" data-section="architecture">
+                <div class="qa-header" onclick="toggleCard(this)">
+                    <div class="qa-number">25</div>
+                    <div class="qa-question">What was the AWS spend and cost optimization you did?</div>
+                    <div class="qa-toggle">
+                        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                </div>
+                <div class="qa-answer">
+                    <div class="answer-content">
+                        <p>I managed approximately <strong>$15,000-20,000/month</strong> in AWS spending for our data infrastructure.</p>
+                        
+                        <p><strong>Specific cost optimization:</strong></p>
+                        
+                        <div class="highlight-box warning">
+                            ⚠️ <strong>Problem:</strong> Our EMR cluster ran 24/7 but jobs only ran 6 hours/day.
+                        </div>
+                        
+                        <p><strong>Solution:</strong></p>
+                        <ol>
+                            <li>Changed from persistent cluster to <strong>transient clusters</strong> (start → run job → terminate)</li>
+                            <li>Used <strong>spot instances</strong> for task nodes</li>
+                            <li>Scheduled clusters with Airflow (only spin up when needed)</li>
+                        </ol>
+                        
+                        <table class="data-table">
+                            <tr>
+                                <th>Metric</th>
+                                <th>Before</th>
+                                <th>After</th>
+                                <th>Savings</th>
+                            </tr>
+                            <tr>
+                                <td>EMR Monthly Cost</td>
+                                <td>$8,000</td>
+                                <td>$3,200</td>
+                                <td><strong>$4,800 (60%)</strong></td>
+                            </tr>
+                        </table>
+                        
+                        <div class="highlight-box success">
+                            💰 <strong>Another win:</strong> Moved cold data (>90 days old) from S3 Standard to S3 Glacier. Saved additional <strong>$500/month</strong> on storage.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>📚 Data Engineer Interview Preparation Guide | Sristi Singh</p>
+        <p style="margin-top: 0.5rem; color: var(--text-muted);">PySpark • Kafka • Airflow • Snowflake • SQL • AWS</p>
+    </footer>
+
+    <script>
+        // Toggle individual card
+        function toggleCard(header) {
+            const card = header.parentElement;
+            card.classList.toggle('open');
+        }
+
+        // Toggle all cards in a section
+        function toggleSection(sectionId) {
+            const cards = document.querySelectorAll(`[data-section="${sectionId}"]`);
+            const allOpen = Array.from(cards).every(card => card.classList.contains('open'));
+            
+            cards.forEach(card => {
+                if (allOpen) {
+                    card.classList.remove('open');
+                } else {
+                    card.classList.add('open');
+                }
+            });
+        }
+
+        // Smooth scroll for nav pills
+        document.querySelectorAll('.nav-pill').forEach(pill => {
+            pill.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                // Update active state
+                document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Update active nav on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.project-section');
+            const navPills = document.querySelectorAll('.nav-pill');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 200;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navPills.forEach(pill => {
+                pill.classList.remove('active');
+                if (pill.getAttribute('href') === '#' + current) {
+                    pill.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
